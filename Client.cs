@@ -11,30 +11,30 @@ namespace GameServer
     ///</summary>
     class Client
     {
-        ///<variable name="databufferSize" value="4096"> 
+        ///<summary name="databufferSize" value="4096"> 
         ///     The size of the data buffer, defaulted to 4096
-        ///</variable>
+        ///</summary>
         public static int dataBufferSize = 4096;
 
-        ///<variable name="id"> 
+        ///<summary name="id"> 
         ///     The clients ID
-        ///</variable>
+        ///</summary>
         public int id;
 
-        ///<variable name="tcp"> 
+        ///<summary name="tcp"> 
         ///     Represents the instance of the tcp class <see cref="Client.TCP"/> created with the clients id
-        ///</variable>
+        ///</summary>
         public TCP tcp;
 
-        ///<variable name="udp"> 
+        ///<summary name="udp"> 
         ///     Represents the instance of the udp class <see cref="Client.UDP"/> created with the clients id
-        ///</variable>
+        ///</summary>
         public UDP udp;
 
-        ///<variable name="player"> 
+        ///<summary name="player"> 
         ///     Represents the instance of the Player class <see cref="Player" /> that will be sent into the game <see cref="Client.SendIntoGame(string)"/>
         ///     and disconnected <see cref="Client.Disconnect" />
-        ///</variable>
+        ///</summary>
         public Player player;
 
         ///<summary> 
@@ -54,30 +54,30 @@ namespace GameServer
         ///</summary>
         public class TCP
         {
-            ///<variable name="socket"> 
+            ///<summary name="socket"> 
             ///     The TcpClient <see cref="System.Net.Sockets.TcpClient"/> that handles recieve and send buffers. 
-            ///</variable>
+            ///</summary>
             public TcpClient socket;
 
-            ///<variable name="stream"> 
+            ///<summary name="stream"> 
             ///     The NetworkStream <see cref="System.Net.Sockets.NetworkStream" /> from the socket <see cref="Client.TCP.socket"> that 
             ///     reads to receive buffer. <see cref="Client.TCP.receiveBuffer"> 
-            ///</variable>
+            ///</summary>
             private NetworkStream stream;
 
-            ///<variable name="recievedData">
+            ///<summary name="recievedData">
             ///   The Packet <see cref="Packet">  that holds the received data 
-            ///</variable>
+            ///</summary>
             private Packet receivedData;
 
-            ///<variable name="receiveBuffer">
+            ///<summary name="receiveBuffer">
             ///     The byte array that holds the data read from the stream <see cref="Client.TCP.stream"/>
-            ///</variable>
+            ///</summary>
             private byte[] receiveBuffer;
 
-            ///<variable name="id">
+            ///<summary name="id">
             ///     Storing the id we receive from <see cref="Client.id"/>
-            ///</variable>
+            ///</summary>
             private readonly int id;
 
             ///<summary> 
@@ -118,7 +118,7 @@ namespace GameServer
             }
 
             ///<summary>
-            ///     Send a packet to the client
+            ///     Send a packet to the client via TCP 
             ///</summary>
             ///<param name="_packet">
             ///     The Packet <see cref="Packet"/> to send to the client
@@ -153,7 +153,7 @@ namespace GameServer
                 //Try catch to avoid crashing server
                 try
                 {
-                    //End reading the stream and hold the length in a variable
+                    //End reading the stream and hold the length in a summary
                     int _byteLength = stream.EndRead(_result);
 
                     //If the length is zero somehow then just gtfo and disconnect.
@@ -256,7 +256,7 @@ namespace GameServer
             }
 
             ///<summary>
-            ///     Handle disconnect.
+            ///     Handle disconnect and cleans up the TCP connection.
             ///</summary>
             public void Disconnect()
             {
@@ -275,14 +275,14 @@ namespace GameServer
         ///</summary>
         public class UDP
         {
-            ///<variable name="endPoint">
+            ///<summary name="endPoint">
             ///     The IPEndPoint <see cref="System.Net.IPEndPoint"/> that represents the endpoint for udp connection
-            ///</variable>
+            ///</summary>
             public IPEndPoint endPoint;
 
-            ///<variable name="id">
+            ///<summary name="id">
             ///     The id of the client <see cref="Client.id">
-            ///</variable>
+            ///</summary>
             private int id;
 
             ///<summary>
@@ -296,17 +296,34 @@ namespace GameServer
                 id = _id;
             }
 
-            
+            ///<summary>
+            ///     Connect to the client via UDP
+            ///</summary>
+            ///<param name="_endPoint">
+            ///     The endpoint to connect to. <see cref="System.Net.IPEndPoint"/>
+            ///</param>
             public void Connect(IPEndPoint _endPoint)
             {
                 endPoint = _endPoint;
             }
 
+            ///<summary>
+            ///     Send data to the client via UDP
+            ///</summary>
+            ///<param name="_packet">
+            ///     The packet to send to the client. <see cref="Packet"/>
+            ///</param>
             public void SendData(Packet _packet)
             {
                 Server.SendUDPData(endPoint, _packet);
             }
 
+            ///<summary>
+            ///     Handle the data of a packet via the correct packet handler
+            ///</summaru>
+            ///<param name="_packetData">
+            ///     The packet whose data to handle <see cref="Packet"/>
+            ///</param>
             public void HandleData(Packet _packetData)
             {
                 int _packetLength = _packetData.ReadInt();
@@ -322,16 +339,27 @@ namespace GameServer
                 });
             }
 
+            ///<summary>
+            ///     Handle disconnecting and cleans up UDP connection
+            ///</summary>
             public void Disconnect()
             {
                 endPoint = null;
             }
         }
 
+        ///<summary>
+        ///     Send the player into the game. Spawn the other players for them as well using a different model in Unity.
+        ///</summary>
+        ///<param name="_playerName">
+        ///     The name of the player to send to the game.
+        ///</param>
         public void SendIntoGame(string _playerName)
         {
+            //Instantiate the player object of the class with the client id, their username and a position of 0,0,0
             player = new Player(id, _playerName, new Vector3(0, 0, 0));
 
+            //A foreach loop to send the other players to the new player
             foreach (Client _client in Server.clients.Values)
             {
                 if (_client.player != null)
@@ -343,6 +371,7 @@ namespace GameServer
                 }
             }
 
+            //Send the new player to the other players. 
             foreach (Client _client in Server.clients.Values)
             {
                 if (_client.player != null)
@@ -352,6 +381,9 @@ namespace GameServer
             }
         }
 
+        ///<summary>
+        ///     Handles disconnect for both UDP and TCP and cleans up the player so that a new one can take their place.
+        ///</summary>
         public void Disconnect()
         {
             Console.WriteLine($"{tcp.socket.Client.RemoteEndPoint} has disconnected");

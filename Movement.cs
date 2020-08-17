@@ -8,17 +8,17 @@ namespace GameServer
     public class Movement
     {   
         ///Make these be got from the server
-        private float AIR_ACCELERATE = 12f;
+        private static float AIR_ACCELERATE = 12f;
 
-        private float ACCELERATE = 24f;
+        private static float ACCELERATE = 24f;
 
-        private float MAX_GROUND_VELOCITY = 6f;
+        private static float MAX_GROUND_VELOCITY = 6f;
 
-        private float MAX_AIR_VELOCITY = 6f;
+        private static float MAX_AIR_VELOCITY = 6f;
 
-        private float FRICTION = 4f;
+        private static float FRICTION = 4f;
 
-        private float HARD_MAX_VELOCITY = 10f;
+        public static float HARD_MAX_VELOCITY = 10f;
 
 
         ///<summary>
@@ -28,7 +28,7 @@ namespace GameServer
         ///<param name="_prevVelocity">The previous ticks velocity</param>
         ///<param name="_accelerate">The multiplicative acceleration constant</param>
         ///<param name="_maxVelocity">The maximum velocity. This is applied via the veer projection onto the acceeleration.</param>
-        public Vector3 Accelerate(Vector3 _accelDir, Vector3 _prevVelocity, float _accelerate, float _maxVelocity)
+        public static Vector3 Accelerate(Vector3 _accelDir, Vector3 _prevVelocity, float _accelerate, float _maxVelocity)
         {
             //Get the veer, or the projection of the velocity onto the acceleration
             float veer = Vector3.Dot(_prevVelocity, _accelDir) / _accelDir.Length();
@@ -41,7 +41,7 @@ namespace GameServer
             {
                 velocityToAccelerateBy = _maxVelocity - veer;
             }
-
+            
             //Return the newly calculated velocity
             return (_prevVelocity + _accelDir * velocityToAccelerateBy);
         }
@@ -53,7 +53,7 @@ namespace GameServer
         ///<param name="_prevVelocity">The previous tick's velocity</param>
         ///<param name="_accelerate">The multiplicative acceleration constant</param>
         ///<param name="_maxVelocity">The maximum velocity. This is applied via the veer projection onto the acceeleration.</param>
-        public Vector3 MoveGround(Vector3 _accelDir, Vector3 _prevVelocity)
+        public static Vector3 MoveGround(Vector3 _accelDir, Vector3 _prevVelocity)
         {
             //Get the speed aka the magnitude of velocity
             float speed = _prevVelocity.Length();
@@ -77,7 +77,7 @@ namespace GameServer
         ///</summary>
         ///<param name="_accelDir">The direction of acceleration</param>
         ///<param name="_prevVelocity">The previous tick's velocity</param>
-        public Vector3 MoveAir(Vector3 _accelDir, Vector3 _prevVelocity)
+        public static Vector3 MoveAir(Vector3 _accelDir, Vector3 _prevVelocity)
         {
             return (Accelerate(_accelDir, _prevVelocity, AIR_ACCELERATE, MAX_AIR_VELOCITY));
         }

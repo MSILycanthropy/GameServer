@@ -42,13 +42,7 @@ namespace GameServer
         ///</packet>
         public static void PlayerMovement(int _fromClient, Packet _packet) {
             //Read the data from the packet
-            bool[] _inputs = new bool[_packet.ReadInt()];
-
-            for (int i = 0; i < _inputs.Length; i++)
-            {
-                _inputs[i] = _packet.ReadBool();
-            }
-
+            Vector2 _inputs = _packet.ReadVector2();
             Quaternion _rotation = _packet.ReadQuaternion();
             
             //Set the inputs

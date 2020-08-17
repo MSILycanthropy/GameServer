@@ -14,13 +14,11 @@ namespace GameServer
         ///<summary>
         ///     Handles the Welcome packet
         ///</summary>
-        ///<param name="_fromClient">
-        ///     What client id the packet is coming from
-        ///</param>
+        ///<param name="_fromClient">What client id the packet is coming from</param>
         ///<param name="_packet">
         ///     The packet that was received from the client
         ///     <see cref="Packet"/>
-        ///</packet>
+        ///</param>
         public static void WelcomeReceived(int _fromClient, Packet _packet) {
             //Read the data from the packet in the order it was written
             int _clientIdCheck = _packet.ReadInt();
@@ -37,9 +35,7 @@ namespace GameServer
         ///<summary>
         ///     Handles the Player Movement Package
         ///</summary>
-        ///<param name="_fromClient">
-        ///     What client id the packet is coming from
-        ///</param>
+        ///<param name="_fromClient">What client id the packet is coming from</param>
         ///<param name="_packet">
         ///     The packet that was received from the client
         ///     <see cref="Packet"/>

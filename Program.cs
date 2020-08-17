@@ -22,7 +22,6 @@ namespace GameServer
         {
             Console.Title = "Shooter Game Server";
             isRunning = true;
-
             //Create the main thread and start it. Along with actually starting the server.
             Thread mainThread = new Thread(new ThreadStart(MainThread));
             mainThread.Start();

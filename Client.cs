@@ -93,9 +93,7 @@ namespace GameServer
             ///     The connect function. It initializes the socket <see cref="Client.TCP.socket">, the stream <see cref="Client.TCP.stream">, 
             ///     the receive buffer <see cref="Client.TCP.receiveBuffer"/>, and get the recieved data <see cref="Client.TCP.receivedData"/>
             ///</summary>
-            ///<param name="_socket">
-            ///     The TcpClient <see cref="System.Net.Sockets.TcpClient"/> representing the socket connection
-            ///</param>
+            ///<param name="_socket">The TcpClient <see cref="System.Net.Sockets.TcpClient"/> representing the socket connection</param>
             public void Connect(TcpClient _socket)
             {
                 //Set the socket and its receive and send buffer sizes
@@ -120,9 +118,7 @@ namespace GameServer
             ///<summary>
             ///     Send a packet to the client via TCP 
             ///</summary>
-            ///<param name="_packet">
-            ///     The Packet <see cref="Packet"/> to send to the client
-            ///</param>
+            ///<param name="_packet">The Packet <see cref="Packet"/> to send to the client</param>
             public void SendData(Packet _packet)
             {   
                 //Put it in a try catch so the server doesn't crash on an exception
@@ -188,12 +184,8 @@ namespace GameServer
             ///<summary>
             ///     Handle the data to determine if we need to reset the packet so it can be reused <see cref="Packet.Reset(bool)"/>
             ///</summary>
-            ///<param name="_data">
-            ///     The bytearray of the data to be handled.
-            ///</param>
-            ///<returns>
-            ///     If we reset or not
-            ///</returns>
+            ///<param name="_data">The bytearray of the data to be handled.</param>
+            ///<returns>If we reset or not</returns>
             private bool HandleData(byte[] _data)
             {   
                 int _packetLength = 0;
@@ -288,9 +280,7 @@ namespace GameServer
             ///<summary>
             ///     UDP class constructor
             ///</summary>
-            ///<param name="_id">
-            ///     The id of the client <see cref="Client.id">
-            ///</param>
+            ///<param name="_id">The id of the client <see cref="Client.id"></param>
             public UDP(int _id)
             {
                 id = _id;
@@ -299,9 +289,7 @@ namespace GameServer
             ///<summary>
             ///     Connect to the client via UDP
             ///</summary>
-            ///<param name="_endPoint">
-            ///     The endpoint to connect to. <see cref="System.Net.IPEndPoint"/>
-            ///</param>
+            ///<param name="_endPoint">The endpoint to connect to. <see cref="System.Net.IPEndPoint"/></param>
             public void Connect(IPEndPoint _endPoint)
             {
                 endPoint = _endPoint;
@@ -310,9 +298,7 @@ namespace GameServer
             ///<summary>
             ///     Send data to the client via UDP
             ///</summary>
-            ///<param name="_packet">
-            ///     The packet to send to the client. <see cref="Packet"/>
-            ///</param>
+            ///<param name="_packet">The packet to send to the client. <see cref="Packet"/></param>
             public void SendData(Packet _packet)
             {
                 Server.SendUDPData(endPoint, _packet);
@@ -321,9 +307,7 @@ namespace GameServer
             ///<summary>
             ///     Handle the data of a packet via the correct packet handler
             ///</summaru>
-            ///<param name="_packetData">
-            ///     The packet whose data to handle <see cref="Packet"/>
-            ///</param>
+            ///<param name="_packetData">The packet whose data to handle <see cref="Packet"/></param>
             public void HandleData(Packet _packetData)
             {
                 int _packetLength = _packetData.ReadInt();
@@ -351,9 +335,7 @@ namespace GameServer
         ///<summary>
         ///     Send the player into the game. Spawn the other players for them as well using a different model in Unity.
         ///</summary>
-        ///<param name="_playerName">
-        ///     The name of the player to send to the game.
-        ///</param>
+        ///<param name="_playerName">The name of the player to send to the game.</param>
         public void SendIntoGame(string _playerName)
         {
             //Instantiate the player object of the class with the client id, their username and a position of 0,0,0

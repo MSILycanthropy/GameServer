@@ -44,14 +44,10 @@ namespace GameServer
         public static Dictionary<int, PacketHandler> packetHandlers;
 
         ///<summary>
-        ///     
+        ///     Start the server
         ///</summary>
-        ///<param name="_maxPlayers">
-        ///
-        ///</param>
-        ///<param name="_port">
-        ///
-        ///</param>
+        ///<param name="_maxPlayers">The max number of players on the server</param>
+        ///<param name="_port">The port used to start the player</param>
         public static void Start(int _maxPlayers, int _port)
         {
             MaxPlayers = _maxPlayers;
@@ -73,9 +69,7 @@ namespace GameServer
         ///<summary>
         ///     The callback function for TCP connections
         ///</summary>
-        ///<param>
-        ///     The IAsyncResult that gets passed with the callback. <see cref="System.IAsyncResult"/>
-        ///</param>
+        ///<param>The IAsyncResult that gets passed with the callback. <see cref="System.IAsyncResult"/></param>
         private static void TCPConnectCallBack(IAsyncResult _result)
         {   
             //Stop accepting connections and store the currently accepted one
@@ -101,9 +95,7 @@ namespace GameServer
         ///<summary>
         ///     The callback function for UDP connections
         ///</summary>
-        ///<param>
-        ///     The IAsyncResult that gets passed with the callback. <see cref="System.IAsyncResult"/>
-        ///</param>
+        ///<param>The IAsyncResult that gets passed with the callback. <see cref="System.IAsyncResult"/></param>
         private static void UDPReceiveCallback(IAsyncResult _result){
             try 
             {
@@ -148,12 +140,8 @@ namespace GameServer
         ///<summary>
         ///     Send data to the client via UDP
         ///</summary>
-        ///<param name="_clientEndPoint">
-        ///     The endpoint on the client side to send the data to 
-        ///</param>
-        ///<param name ="_packet">
-        ///     The packet to send <see cref="Packet"/>
-        ///</param>
+        ///<param name="_clientEndPoint">The endpoint on the client side to send the data to </param>
+        ///<param name ="_packet">The packet to send <see cref="Packet"/></param>
         public static void SendUDPData(IPEndPoint _clientEndPoint, Packet _packet) {
             try {
                 //if the client endpoint exists, the start sending the datta to the client.

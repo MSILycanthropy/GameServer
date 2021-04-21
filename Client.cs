@@ -98,23 +98,18 @@ namespace GameServer
             ///</param>
             public void Connect(TcpClient _socket)
             {
-                //Set the socket and its receive and send buffer sizes
                 socket = _socket;
                 socket.ReceiveBufferSize = dataBufferSize;
                 socket.SendBufferSize = dataBufferSize;
-
-                //Get the stream from the socket
+                
                 stream = socket.GetStream();
 
-                //Initialize receivedData and receiveBuffer
                 receivedData = new Packet();
                 receiveBuffer = new byte[dataBufferSize];
 
-                //Begin reading from the stream, this calls the ReceiveCallback function 
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 
-                //Send the Welcome packet
-                ServerSend.Welcome(id, "Dick and balls");
+                ServerSend.Welcome(id, "Welcome to the Server");
             }
 
             ///<summary>
@@ -125,10 +120,8 @@ namespace GameServer
             ///</param>
             public void SendData(Packet _packet)
             {   
-                //Put it in a try catch so the server doesn't crash on an exception
                 try
                 {   
-                    //If the socket isnt null, write to the stream.
                     if (socket != null)
                     {
                         stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
@@ -136,7 +129,6 @@ namespace GameServer
                 }
                 catch (Exception e)
                 {   
-                    //Log the exception.
                     Console.WriteLine($"Error sending data to player {id} via TCP: {e}");
                 }
             }
@@ -150,37 +142,27 @@ namespace GameServer
             ///</param>
             private void ReceiveCallback(IAsyncResult _result)
             {   
-                //Try catch to avoid crashing server
                 try
                 {
-                    //End reading the stream and hold the length in a variable
                     int _byteLength = stream.EndRead(_result);
 
-                    //If the length is zero somehow then just gtfo and disconnect.
                     if (_byteLength <= 0)
                     {
                         Server.clients[id].Disconnect();
                         return;
                     }
 
-                    //Create an array to store the data, which is of the same length as we got before.
                     byte[] _data = new byte[_byteLength];
 
-                    //Copy that data to the receiveBuffer
                     Array.Copy(receiveBuffer, _data, _byteLength);
 
-                    //Check if we need to reset the receivedData packet so it can be reused
                     receivedData.Reset(HandleData(_data));
 
-                    //Restart the read
                     stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
                 catch (Exception e)
                 {
-                    //Log the error
                     Console.WriteLine($"Error: {e}");
-
-                    //Disconnect on error
                     Server.clients[id].Disconnect();
                 }
             }
@@ -198,35 +180,27 @@ namespace GameServer
             {   
                 int _packetLength = 0;
 
-                //set receivedData to the data that we pass in 
                 receivedData.SetBytes(_data);
 
-                //the reason that 4 is used here is because there are 4 bytes at the start of the array iirc
+                //the reason that 4 is used here is because there are 4 bytes at the start of the array
                 if (receivedData.UnreadLength() >= 4)
                 {
-                    //Read the length
                     _packetLength = receivedData.ReadInt();
 
-                    //If its somehow 0 or somehow less than 0, we gotta reset that shit
                     if (_packetLength <= 0)
                     {
                         return true;
                     }
                 }
 
-                //while the packetlength is bigger than 0 and <= to the length of the data we got 
                 while (_packetLength > 0 && _packetLength <= receivedData.UnreadLength())
                 {
-                    //Get the bytes from the data we got and store it somewhere else for processing.
                     byte[] _packetBytes = receivedData.ReadBytes(_packetLength);
 
-                    //We want to only use the main thread cuz threads confusing.
+                    //We want to only use one thread because I don't really understand threads.
                     ThreadManager.ExecuteOnMainThread(() =>
-                    {
-                        //Create and dipose of a packet
                         using (Packet _packet = new Packet(_packetBytes))
                         {   
-                            //read the packet's id and handle it correctly
                             int _packetId = _packet.ReadInt();
                             Server.packetHandlers[_packetId](id, _packet);
                         }
@@ -245,13 +219,11 @@ namespace GameServer
                     }
                 }
                 
-                //I forget what this one does but it handles an error iirc.
                 if (_packetLength <= 1)
                 {
                     return true;
                 }
-
-                //If we make it this far we don't need to reset.
+                
                 return false;
             }
 
@@ -260,7 +232,6 @@ namespace GameServer
             ///</summary>
             public void Disconnect()
             {
-                //Close the socket and set all the shit to null
                 socket.Close();
                 stream = null;
                 receivedData = null;
